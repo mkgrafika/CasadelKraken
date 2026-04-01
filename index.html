@@ -33,7 +33,7 @@ html{scroll-behavior:smooth}
 body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--text);background:var(--white);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
 /* ── NAV ── */
-.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:72px;display:flex;align-items:center;padding:0 var(--pad);gap:1.5rem}
+.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:72px;padding:0 var(--pad)}.nav-inner{max-width:var(--max-w);margin:0 auto;width:100%;display:flex;align-items:center;gap:1.5rem;height:100%}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
 .nav-logo-icon{width:40px;height:40px;flex-shrink:0}
 .nav-logo-text{font-size:1.05rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
@@ -52,11 +52,11 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .hero h1{font-size:clamp(2.4rem,5.5vw,4rem);color:#fff;font-weight:700;line-height:1.08;letter-spacing:-.02em;margin-bottom:1.2rem;text-shadow:0 2px 12px rgba(0,0,0,.3)}
 .hero-pills{display:flex;gap:10px;flex-wrap:wrap}
 .hero-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 16px;border-radius:999px;font-size:.82rem;font-weight:600;backdrop-filter:blur(4px)}
-.hero-scroll{position:absolute;bottom:2rem;right:var(--pad);max-width:calc((100% - var(--max-w))/2 + var(--pad));background:var(--white);border:1px solid var(--border);color:var(--text-soft);padding:8px 18px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:var(--shadow-sm)}
+.hero-scroll{position:absolute;bottom:1.2rem;right:var(--pad);background:var(--white);border:1px solid var(--border);color:var(--text-soft);padding:8px 18px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:var(--shadow-sm)}
 .hero-scroll:hover{background:var(--sand-light);border-color:var(--sand)}
 
 /* ── GALLERY SECTION ── */
-.gallery-section{background:var(--bg);padding:clamp(2rem,4vw,3.5rem) var(--pad)}
+.gallery-section{background:var(--bg);padding:clamp(2rem,4vw,3.5rem) var(--pad)}.gallery-section .gs-header{max-width:var(--max-w);margin:0 auto}
 .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--olive);margin-bottom:.5rem}
 .section-title{font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:700;color:var(--text);letter-spacing:-.01em;margin-bottom:1.5rem}
 .gallery-inner{max-width:var(--max-w);margin:0 auto;position:relative}
@@ -64,7 +64,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .gallery-grid img{width:100%;height:100%;object-fit:cover;cursor:pointer;transition:opacity .2s,transform .3s}
 .gallery-grid img:hover{opacity:.92;transform:scale(1.02)}
 .gallery-grid .gm{grid-column:1/2;grid-row:1/3}
-.gallery-btn{position:absolute;bottom:16px;right:0;background:rgba(255,255,255,.95);border:1.5px solid var(--text);color:var(--text);padding:9px 18px;border-radius:8px;font-size:.83rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s;backdrop-filter:blur(4px)}
+.gallery-btn{position:absolute;bottom:16px;right:0;background:rgba(255,255,255,.95);border:1.5px solid var(--text);color:var(--text);padding:9px 18px;border-radius:8px;font-size:.83rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s;backdrop-filter:blur(4px);z-index:10}
 .gallery-btn:hover{background:var(--white)}
 .gallery-btn svg{width:15px;height:15px;flex-shrink:0}
 
@@ -83,7 +83,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .page{max-width:var(--max-w);margin:0 auto;padding:0 var(--pad)}
 
 /* ── TWO COL ── */
-.two-col{display:grid;grid-template-columns:1fr 380px;gap:72px;padding:48px 0 80px;align-items:start}
+.two-col{display:grid;grid-template-columns:1fr 380px;gap:72px;padding:48px 0 80px;align-items:start}.two-col>div:first-child{display:flex;flex-direction:column}
 
 /* ── LEFT ── */
 .listing-title{font-size:1.5rem;font-weight:700;letter-spacing:-.01em;margin-bottom:18px}
@@ -97,7 +97,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .host-badge strong{display:block;font-size:.95rem;font-weight:700;color:var(--text)}
 .host-badge span{font-size:.75rem;color:var(--text-muted)}
 
-.description{font-size:.95rem;color:var(--text-soft);line-height:1.8;margin-bottom:10px}
+.description{font-size:.95rem;color:var(--text-soft);line-height:1.85;margin-bottom:10px;flex:1}
 .description p+p{margin-top:.85rem}
 .show-more{background:none;border:none;color:var(--text);font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;margin-top:6px}
 .sec-divider{border:none;border-top:1px solid var(--border-soft);margin:32px 0}
@@ -210,13 +210,24 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .amenity-modal-item{display:flex;align-items:center;gap:12px;padding:10px 0;font-size:.9rem;color:var(--text-soft);border-bottom:1px solid var(--sand-pale)}
 .amenity-modal-item svg{width:20px;height:20px;flex-shrink:0;color:var(--olive-dark)}
 
-@media(max-width:960px){.two-col{grid-template-columns:1fr;gap:40px}.booking-card{position:static}.footer-inner{grid-template-columns:1fr;text-align:center}.footer-social{align-items:center}.footer-right{align-items:center}.footer-reg{text-align:center}}
-@media(max-width:640px){.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px}.gallery-grid .gm{grid-column:1/3;grid-row:1/2}.hero h1{font-size:2rem}.nav-links{display:none}.host-badges{display:none}}
+@media(max-width:960px){.two-col{grid-template-columns:1fr;gap:40px}.booking-card{position:static}.footer-inner{grid-template-columns:1fr;text-align:center}.footer-social{align-items:center}.footer-right{align-items:center}.footer-reg{text-align:center}.gallery-grid{grid-template-rows:min(30vw,280px) min(30vw,280px)}}
+@media(max-width:640px){.hero-scroll{font-size:.72rem;padding:6px 12px;bottom:.8rem;right:var(--pad)}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:min(48vw,220px) min(48vw,220px) min(48vw,220px)}.gallery-grid .gm{grid-column:1/3;grid-row:1/2}.hero h1{font-size:2rem}.nav-links{display:none}.host-badges{display:none}}
+
+.season-card{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color .2s,box-shadow .2s,transform .15s;position:relative;overflow:hidden}
+.season-card:hover{border-color:var(--sand);box-shadow:0 3px 12px rgba(0,0,0,.09);transform:translateY(-1px)}
+.season-card.active-season{border-color:var(--olive)!important;background:var(--olive-light)!important;box-shadow:0 3px 12px rgba(107,124,74,.2)}
+.season-card.sc-peak{border-color:var(--sand)!important;background:var(--sand-light)!important}
+.season-card.sc-peak::before{content:"★ Hlavní";position:absolute;top:0;right:0;background:var(--sand);color:#fff;font-size:.6rem;font-weight:700;padding:3px 9px;border-radius:0 8px 0 8px;letter-spacing:.04em}
+.sc-dates{font-size:.78rem;color:var(--text-muted);margin-bottom:4px;font-weight:600}
+.sc-price{font-size:1.4rem;font-weight:800;color:var(--text);line-height:1.1;margin-bottom:4px}
+.sc-price span{font-size:.78rem;font-weight:400;color:var(--text-muted);margin-left:2px}
+.sc-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
 </style>
 </head>
 <body>
 
 <nav class="nav">
+  <div class="nav-inner">
   <a href="#" class="nav-logo">
     <svg class="nav-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Ears -->
@@ -251,6 +262,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
     <a href="#location">Poloha</a>
   </div>
   <a href="#footer-contact" class="nav-cta">Kontakt</a>
+  </div>
 </nav>
 
 <section class="hero">
@@ -272,7 +284,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 </section>
 
 <section class="gallery-section" id="gallery-sec">
-  <div style="max-width:var(--max-w);margin:0 auto">
+  <div class="gs-header">
     <p class="section-label">Fotogalerie</p>
     <p class="section-title">Prohlédněte si apartmán</p>
   </div>
@@ -335,30 +347,25 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
         </div>
       </div>
 
-      <div class="description" id="desc-short">
-        <p>Probuď se pouhých 100 metrů od moře a užívej si dny na jedné z nejkrásnějších pláží na valencijském pobřeží. Po dni stráveném na pláži si odpočiň na prostorném balkóně u večerního drinku.</p>
-        <p>Apartmán je plně vybavený pro pohodlný pobyt – pro rodinnou večeři v kuchyni nebo hraní v obývacím pokoji. Vše, co potřebuješ, je tady.</p>
+      <div class="description">
+        <p>🏖️ Probuď se pouhých <strong>100 metrů od moře</strong> a užívej si dny na jedné z nejkrásnějších pláží na valencijském pobřeží. Po dni stráveném na pláži si odpočiň na prostorném balkóně u večerního drinku.</p>
+        <p>🏠 Apartmán je <strong>plně vybavený</strong> pro pohodlný pobyt – pro rodinnou večeři v kuchyni nebo hraní v obývacím pokoji. Vše, co potřebuješ, je tady.</p>
+        <p>🎉 Pláž je <strong>zdarma</strong> a během letní sezóny jsou k dispozici plavčíci. Město pořádá na pláži bezplatné aktivity – aerobik, paddleboarding, zumbu a mnoho dalšího.</p>
+        <p>🛏️ V apartmá jsou <strong>dvě ložnice</strong> a obývací pokoj. Obě ložnice mají stropní ventilátory pro pohodlný spánek, v obývacím pokoji je přenosný ventilátor – takže se nebudete potit ani v největším vedru.</p>
+        <p>🔑 <strong>Bezkontaktní příjezd</strong> – klíče budou čekat ve schránce v Gandii (cca 10 km). Příjezd od 15:00, odjezd do 11:00. V případě jakýchkoliv dotazů jsme ti kdykoliv k dispozici.</p>
+        <p>🚬 Kouření povoleno pouze na balkóně.</p>
       </div>
-      <div class="description" id="desc-full" style="display:none">
-        <p>Probuď se pouhých 100 metrů od moře a užívej si dny na jedné z nejkrásnějších pláží na valencijském pobřeží. Po dni stráveném na pláži si odpočiň na prostorném balkóně u večerního drinku.</p>
-        <p>Apartmán je plně vybavený pro pohodlný pobyt – pro rodinnou večeři v kuchyni nebo hraní v obývacím pokoji. Vše, co potřebuješ, je tady.</p>
-        <p>Pláž je zdarma a během letní sezóny jsou k dispozici plavčíci. Město pořádá na pláži bezplatné aktivity – aerobik, paddleboarding, zumbu a mnoho dalšího.</p>
-        <p>V apartmá jsou dvě ložnice a jeden obývací pokoj. Obě ložnice mají stropní ventilátory pro pohodlný spánek a v obývacím pokoji je k dispozici přenosný ventilátor.</p>
-        <p><strong>Přístup pro hosty:</strong> Celý byt je váš. Příjezd je bezkontaktní a flexibilní – klíče budou čekat ve schránce v Gandii (cca 10 km). Předem obdržíte podrobné pokyny.</p>
-        <p><em>Kouření povoleno pouze na balkóně.</em></p>
-      </div>
-      <button class="show-more" id="show-more-btn">Zobrazit více ›</button>
     </div>
 
     <!-- BOOKING CARD -->
     <div>
       <div class="booking-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <div class="bc-price"><strong id="bc-price-display">200 €</strong><span>/ noc</span></div>
-          <div class="bc-stars"><svg viewBox="0 0 12 12"><path d="M6 1l1.4 2.8 3.1.4-2.2 2.2.5 3.1L6 8l-2.8 1.5.5-3.1-2.2-2.2 3.1-.4z"/></svg>4.9</div>
+        <div style="margin-bottom:14px">
+          <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--olive);margin-bottom:3px">Dostupnost</p>
+          <p style="font-size:1.1rem;font-weight:700;color:var(--text)">Rezervační kalendář</p>
         </div>
 
-        <p style="font-size:.79rem;color:var(--text-muted);margin-bottom:12px">Vyberte termín – min. pobyt 5 nocí</p>
+        <p style="font-size:.79rem;color:var(--text-muted);margin-bottom:12px" id="bc-min-hint">Vyberte termín · min. pobyt <span id="min-nights-label">5 nocí</span></p>
 
         <div class="bc-cal-header">
           <button class="bc-cal-nav" id="bc-prev">&#8592;</button>
@@ -393,7 +400,12 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
     <div style="padding:36px 0 40px">
       <p class="section-label">Ceník</p>
       <p class="section-title" style="margin-bottom:1.2rem">Sezónní ceny 2026</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;max-width:820px" id="season-table">
+      <div style="background:var(--sand-pale);border:1.5px solid var(--sand);border-radius:16px;padding:20px 24px;max-width:860px;box-shadow:0 2px 12px rgba(200,169,110,0.15)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border-soft)">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="var(--sand)" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="16" height="14" rx="2"/><path d="M6 2v4M14 2v4M2 9h16"/></svg>
+        <span style="font-size:.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.09em">Přehled cen podle termínu</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px" id="season-table">
         <div class="season-card" data-from="2026-06-27" data-to="2026-07-12" data-price="168">
           <div class="sc-dates">27. 6. – 12. 7.</div>
           <div class="sc-price">168 €<span>/noc</span></div>
@@ -425,7 +437,11 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
           <div class="sc-label">Pozdní podzim</div>
         </div>
       </div>
-      <p style="font-size:.8rem;color:var(--text-muted);margin-top:14px">Minimální pobyt 5 nocí &nbsp;·&nbsp; Cena za celý apartmán</p>
+      <p style="font-size:.78rem;color:var(--text-muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--border-soft)">
+        🌙 Cena za celý apartmán &nbsp;·&nbsp; Hlavní sezóna: min. 5 nocí &nbsp;·&nbsp; Mimo sezónu: min. 4 noci
+      </p>
+      </div>
+      
     </div>
   </div>
 </div>
@@ -607,14 +623,7 @@ document.getElementById('lb-next').addEventListener('click',()=>{ lbIdx=(lbIdx+1
 document.getElementById('lightbox').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeLb(); });
 document.addEventListener('keydown',e=>{ if(!document.getElementById('lightbox').classList.contains('open'))return; if(e.key==='Escape')closeLb(); if(e.key==='ArrowLeft'){lbIdx=(lbIdx-1+GALLERY.length)%GALLERY.length;updateLb();} if(e.key==='ArrowRight'){lbIdx=(lbIdx+1)%GALLERY.length;updateLb();} });
 
-// Show more
-let expanded=false;
-document.getElementById('show-more-btn').addEventListener('click',()=>{
-  expanded=!expanded;
-  document.getElementById('desc-short').style.display=expanded?'none':'block';
-  document.getElementById('desc-full').style.display=expanded?'block':'none';
-  document.getElementById('show-more-btn').textContent=expanded?'Zobrazit méně ‹':'Zobrazit více ›';
-});
+// Description shown in full - no show more needed
 
 // Amenity icons
 function icon(name){
@@ -802,7 +811,13 @@ function isBooked(d){
 const MCS=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
 const DCS=['Po','Út','St','Čt','Pá','So','Ne'];
 let vy=2026,vm=5,ss=null,se=null;
-const MIN=5;
+const PEAK_START=new Date(2026,5,27); // Jun 27
+const PEAK_END=new Date(2026,7,31);   // Aug 31
+function getMinNights(date){
+  if(!date) return 5;
+  return (date>=PEAK_START && date<=PEAK_END) ? 5 : 4;
+}
+let MIN=5;
 
 function sameDay(a,b){return a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
 function fmtD(d){return d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();}
@@ -851,6 +866,9 @@ function buildCal(){
           while(cur<date){if(isBooked(cur)){hb=true;break;}cur.setDate(cur.getDate()+1);}
           if(hb){ss=date;se=null;}else se=date;
         }
+        MIN=ss?getMinNights(ss):5;
+        const minLabel=document.getElementById('min-nights-label');
+        if(minLabel) minLabel.textContent=MIN+' nocí';
         highlightSeasonRow(ss||null);
         highlightSeasonCards();
         buildCal();updateSum();
@@ -865,14 +883,14 @@ function updateSum(){
   const warn=ss&&se&&diff(ss,se)>0&&diff(ss,se)<MIN;
   document.getElementById('bc-summary').style.display=ok?'block':'none';
   document.getElementById('bc-summary').classList.toggle('vis',ok);
-  document.getElementById('bc-warn').style.display=warn?'block':'none';
+  const warnEl=document.getElementById('bc-warn');if(warnEl){warnEl.textContent='Min. pobyt jsou '+MIN+' noci';warnEl.style.display=warn?'block':'none';}
   if(ok){
     const {total,nights,avg}=calcStayPrice(ss,se);
     document.getElementById('bc-sum-dates').textContent=fmtD(ss)+' – '+fmtD(se);
     document.getElementById('bc-sum-label').textContent=nights+' nocí × prům. '+avg+' €';
     document.getElementById('bc-sum-sub').textContent=total.toLocaleString()+' €';
     document.getElementById('bc-sum-total').textContent=total.toLocaleString()+' €';
-    document.getElementById('bc-price-display').textContent=avg+' €';
+    // price display removed from card
     document.getElementById('bc-book-btn').href=`mailto:casadelkraken@gmail.com?subject=Rezervace%20Casa%20del%20Kraken&body=Dobr%C3%BD%20den%2C%20r%C3%A1d%2Fa%20bych%20rezervoval%2Fa%20term%C3%ADn%20od%20${fmtD(ss)}%20do%20${fmtD(se)}.%20Celkem%3A%20${total}%20EUR%20(${nights}%20noc%C3%AD).`;
   }
 }
