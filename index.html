@@ -27,7 +27,7 @@
   --shadow:0 2px 20px rgba(0,0,0,0.10);
   --shadow-sm:0 1px 4px rgba(0,0,0,0.08);
   --max-w:1160px;
-  --pad:clamp(1.5rem,5vw,3.5rem);
+  --pad:clamp(2rem,8vw,5rem);
 }
 html{scroll-behavior:smooth}
 body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--text);background:var(--white);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -47,12 +47,12 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .hero{position:relative;height:88vh;min-height:480px;max-height:700px;overflow:hidden}
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(30,30,20,.72) 0%,rgba(30,30,20,.15) 55%,transparent 100%)}
-.hero-content{position:absolute;bottom:0;left:0;right:0;padding:clamp(2rem,5vw,4rem) var(--pad)}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:clamp(2rem,5vw,4rem) var(--pad)}.hero-content-inner{max-width:var(--max-w);margin:0 auto}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 14px;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;backdrop-filter:blur(4px)}
 .hero h1{font-size:clamp(2.4rem,5.5vw,4rem);color:#fff;font-weight:700;line-height:1.08;letter-spacing:-.02em;margin-bottom:1.2rem;text-shadow:0 2px 12px rgba(0,0,0,.3)}
 .hero-pills{display:flex;gap:10px;flex-wrap:wrap}
 .hero-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 16px;border-radius:999px;font-size:.82rem;font-weight:600;backdrop-filter:blur(4px)}
-.hero-scroll{position:absolute;bottom:2rem;right:var(--pad);background:var(--white);border:1px solid var(--border);color:var(--text-soft);padding:8px 18px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:var(--shadow-sm)}
+.hero-scroll{position:absolute;bottom:2rem;right:var(--pad);max-width:calc((100% - var(--max-w))/2 + var(--pad));background:var(--white);border:1px solid var(--border);color:var(--text-soft);padding:8px 18px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:var(--shadow-sm)}
 .hero-scroll:hover{background:var(--sand-light);border-color:var(--sand)}
 
 /* ── GALLERY SECTION ── */
@@ -257,6 +257,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
   <img id="hero-img" class="hero-img" src="" alt="Casa del Kraken – Playa de Piles">
   <div class="hero-overlay"></div>
   <div class="hero-content">
+    <div class="hero-content-inner">
     <div class="hero-eyebrow">🏖️ Playa de Piles · Valencie · Španělsko</div>
     <h1>Casa del Kraken</h1>
     <div class="hero-pills">
@@ -264,6 +265,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
       <span class="hero-pill"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M5 5V4a2 2 0 014 0v1M11 5V4a2 2 0 014 0v1"/></svg>2 ložnice</span>
       <span class="hero-pill"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="8" r="4"/><path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg>Max. 4 hosté</span>
       <span class="hero-pill"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="14" height="10" rx="1"/><path d="M7 8V6a3 3 0 016 0v2"/></svg>Balkón s výhledem</span>
+    </div>
     </div>
   </div>
   <a href="#gallery-sec" class="hero-scroll">Prohlédnout fotky ↓</a>
@@ -403,7 +405,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
         </div>
         <div class="bc-warn" id="bc-warn">Min. pobyt jsou 5 nocí</div>
 
-        <a class="bc-btn" id="bc-book-btn" href="mailto:casadelkraken@gmail.com">Poptejte termín</a>
+        <button class="bc-btn" id="bc-book-btn" onclick="openContactModal()">Poptejte termín</button>
         <p class="bc-note">Bez rezervačního poplatku &nbsp;·&nbsp; Rychlá odpověď</p>
         <p class="bc-min">Min. pobyt: 5 nocí &nbsp;·&nbsp; Check-in od 15:00</p>
       </div>
@@ -697,47 +699,74 @@ let bookedRanges=[];
 let calLoaded=false;
 
 async function fetchICal(){
-  try{
-    const resp=await fetch(CORS_PROXY+encodeURIComponent(ICAL_URL));
-    if(!resp.ok) throw new Error('fetch failed');
-    const text=await resp.text();
-    bookedRanges=parseICal(text);
-    calLoaded=true;
-    buildCal();
-  }catch(e){
-    console.warn('iCal load failed, using empty calendar',e);
-    calLoaded=true;
-    buildCal();
+  const proxies=[
+    'https://corsproxy.io/?'+encodeURIComponent(ICAL_URL),
+    'https://api.allorigins.win/raw?url='+encodeURIComponent(ICAL_URL),
+  ];
+  for(const url of proxies){
+    try{
+      const resp=await fetch(url,{signal:AbortSignal.timeout(8000)});
+      if(!resp.ok) continue;
+      const text=await resp.text();
+      if(text.includes('BEGIN:VCALENDAR')){
+        bookedRanges=parseICal(text);
+        calLoaded=true;
+        buildCal();
+        return;
+      }
+    }catch(e){
+      console.warn('proxy failed:',url,e);
+    }
   }
+  console.warn('All iCal proxies failed, showing empty calendar');
+  calLoaded=true;
+  buildCal();
 }
 
 function parseICal(text){
   const ranges=[];
-  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-  let dtstart=null,dtend=null,inEvent=false;
+  // Unfold lines (iCal lines can be wrapped with CRLF + space/tab)
+  const unfolded=text.replace(/\r\n[ \t]/g,'').replace(/\r[ \t]/g,'').replace(/\n[ \t]/g,'');
+  const lines=unfolded.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
+  let dtstart=null,dtend=null,dtstartRaw=null,dtendRaw=null,inEvent=false;
   for(const line of lines){
-    if(line.startsWith('BEGIN:VEVENT')) inEvent=true;
+    if(line.startsWith('BEGIN:VEVENT')){inEvent=true;dtstart=null;dtend=null;dtstartRaw=null;dtendRaw=null;}
     if(line.startsWith('END:VEVENT')){
       if(dtstart&&dtend) ranges.push({s:dtstart,e:dtend});
-      dtstart=null;dtend=null;inEvent=false;
+      inEvent=false;
     }
     if(inEvent){
-      const dsm=line.match(/^DTSTART[^:]*:([\dT]+)/);
-      const dem=line.match(/^DTEND[^:]*:([\dT]+)/);
-      if(dsm) dtstart=parseICalDate(dsm[1]);
-      if(dem) dtend=parseICalDate(dem[1]);
+      // Match DTSTART or DTSTART;VALUE=DATE or DTSTART;TZID=...
+      const dsm=line.match(/^DTSTART[^:]*:(.+)/);
+      const dem=line.match(/^DTEND[^:]*:(.+)/);
+      if(dsm){dtstartRaw=dsm[1].trim();dtstart=parseICalDate(dtstartRaw);}
+      if(dem){dtendRaw=dem[1].trim();dtend=parseICalDate(dtendRaw);}
     }
   }
+  console.log('Parsed '+ranges.length+' booked ranges from iCal');
+  ranges.forEach(r=>console.log(' Booked:',r.s.toDateString(),'->',r.e.toDateString()));
   return ranges;
 }
 
 function parseICalDate(s){
-  const y=parseInt(s.substr(0,4));
-  const m=parseInt(s.substr(4,2))-1;
-  const d=parseInt(s.substr(6,2));
+  // Handle both DATE (20260911) and DATETIME (20260911T150000Z) formats
+  const clean=s.replace(/[TZ]/g,'').substr(0,8);
+  const y=parseInt(clean.substr(0,4));
+  const m=parseInt(clean.substr(4,2))-1;
+  const d=parseInt(clean.substr(6,2));
   const dt=new Date(y,m,d);
   dt.setHours(0,0,0,0);
   return dt;
+}
+
+// For datetime events (with time), DTEND checkout time means that day is free
+// For all-day events, DTEND is exclusive (day after last night)
+// We store end as-is and check d < e so both work correctly
+function adjustEndDate(dtendStr, dtstartStr){
+  // If DTSTART has time component, it's a datetime event
+  // DTEND with time like T100000 means checkout at 10:00 - that day IS free
+  // So for datetime events, end date = the checkout day (exclusive, already correct)
+  return parseICalDate(dtendStr);
 }
 
 function isBooked(d){
@@ -826,6 +855,120 @@ document.getElementById('bc-prev').addEventListener('click',()=>{vm--;if(vm<0){v
 document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){vm=0;vy++;}buildCal();});
 
 fetchICal();
+
+// Contact modal
+function openContactModal(){
+  // Pre-fill termin if selected
+  const termEl=document.getElementById('form-termin');
+  const termText=document.getElementById('form-termin-text');
+  const termDisplay=document.getElementById('form-termin-display');
+  const sumTotal=document.getElementById('bc-sum-total');
+  const cenaEl=document.getElementById('form-cena');
+  if(ss&&se){
+    const tStr=fmtD(ss)+' – '+fmtD(se);
+    if(termEl) termEl.value=tStr;
+    if(termText) termText.textContent=tStr;
+    if(termDisplay) termDisplay.style.display='block';
+    const total=document.getElementById('bc-sum-total');
+    if(total&&cenaEl) cenaEl.value=total.textContent;
+    const subj=document.getElementById('form-subject');
+    if(subj) subj.value='Poptávka rezervace '+tStr+' – Casa del Kraken';
+  } else {
+    if(termDisplay) termDisplay.style.display='none';
+  }
+  document.getElementById('contact-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeContactModal(){
+  document.getElementById('contact-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('contact-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeContactModal();});
+
+// Formspree AJAX submit
+document.getElementById('contact-form').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const btn=this.querySelector('button[type=submit]');
+  const orig=btn.textContent;
+  btn.textContent='Odesílám...';btn.disabled=true;
+  try{
+    const resp=await fetch('https://formspree.io/f/meepzajq',{
+      method:'POST',
+      body:new FormData(this),
+      headers:{Accept:'application/json'}
+    });
+    if(resp.ok){
+      document.getElementById('contact-form-wrap').style.display='none';
+      document.getElementById('contact-success').style.display='block';
+    } else {
+      btn.textContent=orig;btn.disabled=false;
+      alert('Nepodařilo se odeslat, zkuste prosím znovu nebo napište na casadelkraken@gmail.com');
+    }
+  }catch(err){
+    btn.textContent=orig;btn.disabled=false;
+    alert('Chyba odeslání. Napište prosím přímo na casadelkraken@gmail.com');
+  }
+});
+
 </script>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h3>Poptávka termínu</h3>
+      <button class="modal-close" onclick="closeContactModal()">&times;</button>
+    </div>
+    <div id="contact-form-wrap">
+      <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:18px">Vyplňte prosím kontaktní údaje a my se vám co nejdříve ozveme.</p>
+      <form id="contact-form" action="https://formspree.io/f/meepzajq" method="POST">
+        <input type="hidden" name="_subject" id="form-subject" value="Poptávka rezervace – Casa del Kraken">
+        <input type="hidden" name="termin" id="form-termin" value="">
+        <input type="hidden" name="cena" id="form-cena" value="">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:block;margin-bottom:6px">Jméno</label>
+            <input type="text" name="jmeno" required placeholder="Jan" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:inherit;outline:none;transition:border .15s" onfocus="this.style.borderColor='var(--olive)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:block;margin-bottom:6px">Příjmení</label>
+            <input type="text" name="prijmeni" required placeholder="Novák" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:inherit;outline:none;transition:border .15s" onfocus="this.style.borderColor='var(--olive)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:block;margin-bottom:6px">Email</label>
+          <input type="email" name="email" required placeholder="jan@email.cz" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:inherit;outline:none;transition:border .15s" onfocus="this.style.borderColor='var(--olive)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:block;margin-bottom:6px">Telefon</label>
+          <input type="tel" name="telefon" placeholder="+420 777 123 456" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:inherit;outline:none;transition:border .15s" onfocus="this.style.borderColor='var(--olive)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <div id="form-termin-display" style="display:none;background:var(--olive-light);border:1px solid var(--border-soft);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.88rem;color:var(--olive-dark)">
+          <strong>Vybraný termín:</strong> <span id="form-termin-text"></span>
+        </div>
+
+        <div style="margin-bottom:18px">
+          <label style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:block;margin-bottom:6px">Zpráva <span style="font-weight:400;text-transform:none">(volitelné)</span></label>
+          <textarea name="zprava" rows="3" placeholder="Máte dotazy nebo speciální požadavky?" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-family:inherit;outline:none;resize:vertical;transition:border .15s" onfocus="this.style.borderColor='var(--olive)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+
+        <button type="submit" class="bc-btn" style="margin-top:0">Odeslat poptávku</button>
+        <p style="text-align:center;font-size:.77rem;color:var(--text-muted);margin-top:10px">Odpovídáme zpravidla do 24 hodin</p>
+      </form>
+    </div>
+    <!-- SUCCESS STATE -->
+    <div id="contact-success" style="display:none;text-align:center;padding:2rem 1rem">
+      <div style="font-size:3rem;margin-bottom:1rem">✅</div>
+      <h3 style="font-size:1.2rem;margin-bottom:.6rem;color:var(--olive-dark)">Poptávka odeslána!</h3>
+      <p style="font-size:.92rem;color:var(--text-muted);line-height:1.7">Děkujeme za váš zájem o Casa del Kraken.<br>Ozveme se vám co nejdříve, zpravidla do 24 hodin.</p>
+      <button onclick="closeContactModal()" class="bc-btn" style="max-width:200px;margin:1.5rem auto 0">Zavřít</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
