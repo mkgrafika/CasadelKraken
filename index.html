@@ -47,24 +47,24 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .hero{position:relative;height:88vh;min-height:480px;max-height:700px;overflow:hidden}
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(30,30,20,.72) 0%,rgba(30,30,20,.15) 55%,transparent 100%)}
-.hero-content{position:absolute;bottom:0;left:0;right:0;padding:clamp(2rem,5vw,4rem) var(--pad)}.hero-content-inner{max-width:var(--max-w);margin:0 auto;width:100%}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:clamp(2rem,5vw,4rem) var(--pad)}.hero-content-inner{max-width:var(--max-w);margin:0 auto;width:100%;position:relative;padding-bottom:3.5rem}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 14px;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;backdrop-filter:blur(4px)}
 .hero h1{font-size:clamp(2.4rem,5.5vw,4rem);color:#fff;font-weight:700;line-height:1.08;letter-spacing:-.02em;margin-bottom:1.2rem;text-shadow:0 2px 12px rgba(0,0,0,.3)}
 .hero-pills{display:flex;gap:10px;flex-wrap:wrap}
 .hero-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 16px;border-radius:999px;font-size:.82rem;font-weight:600;backdrop-filter:blur(4px)}
-.hero-scroll{position:absolute;bottom:1.2rem;right:var(--pad);background:var(--white);border:1px solid var(--border);color:var(--text-soft);padding:8px 18px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:var(--shadow-sm)}
+.hero-scroll{position:absolute;bottom:0;right:0;background:var(--white);border:1px solid var(--border);color:var(--text-soft);padding:8px 18px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:var(--shadow-sm)}
 .hero-scroll:hover{background:var(--sand-light);border-color:var(--sand)}
 
 /* ── GALLERY SECTION ── */
 .gallery-section{background:var(--bg);padding:clamp(2rem,4vw,3.5rem) var(--pad)}.gallery-section .gs-header{max-width:var(--max-w);margin:0 auto}
 .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--olive);margin-bottom:.5rem}
 .section-title{font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:700;color:var(--text);letter-spacing:-.01em;margin-bottom:1.5rem}
-.gallery-inner{max-width:var(--max-w);margin:0 auto;position:relative}
+.gallery-inner{max-width:var(--max-w);margin:0 auto;width:100%;display:flex;flex-direction:column}
 .gallery-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:280px 280px;gap:6px;border-radius:var(--radius);overflow:hidden}
 .gallery-grid img{width:100%;height:100%;object-fit:cover;cursor:pointer;transition:opacity .2s,transform .3s}
 .gallery-grid img:hover{opacity:.92;transform:scale(1.02)}
 .gallery-grid .gm{grid-column:1/2;grid-row:1/3}
-.gallery-btn{position:absolute;bottom:16px;right:0;background:rgba(255,255,255,.95);border:1.5px solid var(--text);color:var(--text);padding:9px 18px;border-radius:8px;font-size:.83rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s;backdrop-filter:blur(4px);z-index:10}
+.gallery-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.95);border:1.5px solid var(--text);color:var(--text);padding:9px 18px;border-radius:8px;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .15s;margin-top:-52px;margin-left:auto;margin-right:0;position:relative;z-index:10}
 .gallery-btn:hover{background:var(--white)}
 .gallery-btn svg{width:15px;height:15px;flex-shrink:0}
 
@@ -211,7 +211,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .amenity-modal-item svg{width:20px;height:20px;flex-shrink:0;color:var(--olive-dark)}
 
 @media(max-width:960px){.two-col{grid-template-columns:1fr;gap:40px}.booking-card{position:static}.footer-inner{grid-template-columns:1fr;text-align:center}.footer-social{align-items:center}.footer-right{align-items:center}.footer-reg{text-align:center}.gallery-grid{grid-template-rows:min(30vw,280px) min(30vw,280px)}}
-@media(max-width:640px){.hero-scroll{font-size:.72rem;padding:6px 12px;bottom:.8rem;right:var(--pad)}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:min(48vw,220px) min(48vw,220px) min(48vw,220px)}.gallery-grid .gm{grid-column:1/3;grid-row:1/2}.hero h1{font-size:2rem}.nav-links{display:none}.host-badges{display:none}}
+@media(max-width:640px){.hero-scroll{font-size:.72rem;padding:6px 12px;bottom:0;right:0}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:min(48vw,220px) min(48vw,220px) min(48vw,220px)}.gallery-grid .gm{grid-column:1/3;grid-row:1/2}.hero h1{font-size:2rem}.nav-links{display:none}.host-badges{display:none}}
 
 .season-card{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color .2s,box-shadow .2s,transform .15s;position:relative;overflow:hidden}
 .season-card:hover{border-color:var(--sand);box-shadow:0 3px 12px rgba(0,0,0,.09);transform:translateY(-1px)}
@@ -277,10 +277,10 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
       <span class="hero-pill"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M5 5V4a2 2 0 014 0v1M11 5V4a2 2 0 014 0v1"/></svg>2 ložnice</span>
       <span class="hero-pill"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="8" r="4"/><path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg>Max. 4 hosté</span>
       <span class="hero-pill"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="14" height="10" rx="1"/><path d="M7 8V6a3 3 0 016 0v2"/></svg>Balkón s výhledem</span>
+    <a href="#gallery-sec" class="hero-scroll">Prohlédnout fotky ↓</a>
     </div>
     </div>
   </div>
-  <a href="#gallery-sec" class="hero-scroll">Prohlédnout fotky ↓</a>
 </section>
 
 <section class="gallery-section" id="gallery-sec">
