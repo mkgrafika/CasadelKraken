@@ -745,53 +745,57 @@ const CORS_PROXY='https://corsproxy.io/?';
 let bookedRanges=[];
 let calLoaded=false;
 
+async function tryProxy(url){
+  const resp=await fetch(url);
+  if(!resp.ok) throw new Error('HTTP '+resp.status);
+  const text=await resp.text();
+  if(!text.includes('BEGIN:VCALENDAR')) throw new Error('Not iCal');
+  return text;
+}
+
 async function fetchICal(){
-  // Show calendar immediately with no booked days
+  // Show calendar immediately
   calLoaded=true;
   buildCal();
 
-  // Try to load from sessionStorage cache first (avoid repeat fetches)
-  const cacheKey='cdkIcal';
-  const cacheTime='cdkIcalTime';
-  const cached=sessionStorage.getItem(cacheKey);
-  const cachedAt=parseInt(sessionStorage.getItem(cacheTime)||'0');
-  const AGE=15*60*1000; // 15 min cache
+  // Check session cache (15 min)
+  try{
+    const cached=sessionStorage.getItem('cdkIcal');
+    const cachedAt=parseInt(sessionStorage.getItem('cdkIcalT')||'0');
+    if(cached && (Date.now()-cachedAt)<900000){
+      bookedRanges=parseICal(cached);
+      buildCal();
+      console.log('iCal from cache, ranges:',bookedRanges.length);
+      return;
+    }
+  }catch(e){}
 
-  if(cached && Date.now()-cachedAt < AGE){
-    bookedRanges=parseICal(cached);
-    buildCal();
-    return;
-  }
-
-  // Try proxies in parallel - use whichever responds first
+  // Try proxies one by one
   const proxies=[
     'https://api.allorigins.win/raw?url='+encodeURIComponent(ICAL_URL),
     'https://corsproxy.io/?'+encodeURIComponent(ICAL_URL),
     'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(ICAL_URL),
   ];
 
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),10000);
-
-  try{
-    const results=await Promise.any(
-      proxies.map(url=>
-        fetch(url,{signal:controller.signal})
-          .then(r=>{ if(!r.ok) throw new Error('bad status'); return r.text(); })
-          .then(text=>{ if(!text.includes('BEGIN:VCALENDAR')) throw new Error('not ical'); return text; })
-      )
-    );
-    clearTimeout(timeout);
-    sessionStorage.setItem(cacheKey, results);
-    sessionStorage.setItem(cacheTime, Date.now().toString());
-    bookedRanges=parseICal(results);
-    buildCal();
-    console.log('iCal loaded, '+bookedRanges.length+' booked ranges');
-  }catch(e){
-    clearTimeout(timeout);
-    console.warn('iCal load failed (all proxies):', e.message);
-    // Calendar still works, just without booked days highlighted
+  for(const url of proxies){
+    try{
+      const text=await Promise.race([
+        tryProxy(url),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),8000))
+      ]);
+      bookedRanges=parseICal(text);
+      buildCal();
+      try{
+        sessionStorage.setItem('cdkIcal',text);
+        sessionStorage.setItem('cdkIcalT',Date.now().toString());
+      }catch(e){}
+      console.log('iCal OK via '+url+', ranges:',bookedRanges.length);
+      return;
+    }catch(e){
+      console.warn('Proxy failed:',url,e.message);
+    }
   }
+  console.warn('All proxies failed, calendar works without booked days');
 }
 
 // ── MINI CALENDAR ──
@@ -887,9 +891,11 @@ function updateSum(){
 document.getElementById('bc-prev').addEventListener('click',()=>{vm--;if(vm<0){vm=11;vy--;}buildCal();});
 document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){vm=0;vy++;}buildCal();});
 
-const loaderEl=document.getElementById('cal-loader');
-if(loaderEl) loaderEl.style.display='block';
-fetchICal();
+try{
+  const loaderEl=document.getElementById('cal-loader');
+  if(loaderEl) loaderEl.style.display='block';
+}catch(e){}
+fetchICal().catch(e=>console.warn('fetchICal error:',e));
 
 
 function highlightSeasonCards(){
