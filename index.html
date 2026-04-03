@@ -734,8 +734,7 @@ function highlightSeasonRow(date){
 }
 
 // ── GOOGLE CALENDAR INTEGRATION ──
-const ICAL_URL='https://www.airbnb.cz/calendar/ical/1561616555679812480.ics?t=389f6ee359b346ec9a9f30cc9ce9c328';
-const CORS_PROXY='https://corsproxy.io/?';
+const ICAL_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.airbnb.cz/calendar/ical/1561616555679812480.ics?t=389f6ee359b346ec9a9f30cc9ce9c328');const CORS_PROXY='https://corsproxy.io/?';
 let bookedRanges=[];
 let calLoaded=false;
 
