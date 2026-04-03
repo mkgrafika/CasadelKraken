@@ -754,11 +754,8 @@ async function tryProxy(url){
 }
 
 async function fetchICal(){
-  // Show calendar immediately
-  calLoaded=true;
-  buildCal();
-
   // Check session cache (15 min)
+  calLoaded=true;
   try{
     const cached=sessionStorage.getItem('cdkIcal');
     const cachedAt=parseInt(sessionStorage.getItem('cdkIcalT')||'0');
@@ -891,11 +888,14 @@ function updateSum(){
 document.getElementById('bc-prev').addEventListener('click',()=>{vm--;if(vm<0){vm=11;vy--;}buildCal();});
 document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){vm=0;vy++;}buildCal();});
 
-try{
-  const loaderEl=document.getElementById('cal-loader');
-  if(loaderEl) loaderEl.style.display='block';
-}catch(e){}
-fetchICal().catch(e=>console.warn('fetchICal error:',e));
+document.addEventListener('DOMContentLoaded', function(){
+  try{
+    const loaderEl=document.getElementById('cal-loader');
+    if(loaderEl) loaderEl.style.display='block';
+  }catch(e){}
+  buildCal();
+  fetchICal().catch(e=>console.warn('fetchICal error:',e));
+});
 
 
 function highlightSeasonCards(){
