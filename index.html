@@ -840,22 +840,44 @@ function getSeasonColor(d){
 }
 
 function buildCal(){
+  if (!calLoaded) return; // 👈 tohle je jediná změna nahoře
+
   const g=document.getElementById('bc-cal-grid');
   document.getElementById('bc-cal-title').textContent=MCS[vm]+' '+vy;
   g.innerHTML='';
-  DCS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;g.appendChild(e);});
+
+  DCS.forEach(d=>{
+    const e=document.createElement('div');
+    e.className='cal-dow';
+    e.textContent=d;
+    g.appendChild(e);
+  });
+
   let dow=(new Date(vy,vm,1).getDay()+6)%7;
-  for(let i=0;i<dow;i++){const e=document.createElement('div');e.className='cal-day empty';g.appendChild(e);}
+  for(let i=0;i<dow;i++){
+    const e=document.createElement('div');
+    e.className='cal-day empty';
+    g.appendChild(e);
+  }
+
   const dim=new Date(vy,vm+1,0).getDate();
   const today=new Date();today.setHours(0,0,0,0);
+
   for(let d=1;d<=dim;d++){
     const date=new Date(vy,vm,d);date.setHours(0,0,0,0);
-    const e=document.createElement('div');e.className='cal-day';e.textContent=d;
-    // Season dot
+
+    const e=document.createElement('div');
+    e.className='cal-day';
+    e.textContent=d;
+
     const sc=getSeasonColor(date);
     if(sc&&date>=today){
-      const dot=document.createElement('span');dot.className='s-dot';dot.style.background=sc;e.appendChild(dot);
+      const dot=document.createElement('span');
+      dot.className='s-dot';
+      dot.style.background=sc;
+      e.appendChild(dot);
     }
+
     if(date<today){e.classList.add('past');}
     else if(isBooked(date)){e.classList.add('booked');}
     else{
@@ -864,23 +886,35 @@ function buildCal(){
         else if(sameDay(date,se))e.classList.add('sel-end');
         else if(date>ss&&date<se)e.classList.add('in-range');
       }else if(ss&&sameDay(date,ss))e.classList.add('sel-start','sel-end');
+
       e.addEventListener('click',()=>{
         if(!ss||(ss&&se)){ss=date;se=null;}
         else if(date<ss){ss=date;se=null;}
         else if(sameDay(date,ss)){ss=null;se=null;}
         else{
-          let cur=new Date(ss);cur.setDate(cur.getDate()+1);let hb=false;
-          while(cur<date){if(isBooked(cur)){hb=true;break;}cur.setDate(cur.getDate()+1);}
+          let cur=new Date(ss);
+          cur.setDate(cur.getDate()+1);
+          let hb=false;
+
+          while(cur<date){
+            if(isBooked(cur)){hb=true;break;}
+            cur.setDate(cur.getDate()+1);
+          }
+
           if(hb){ss=date;se=null;}else se=date;
         }
+
         MIN=ss?getMinNights(ss):5;
         const minLabel=document.getElementById('min-nights-label');
         if(minLabel) minLabel.textContent=MIN+' nocí';
+
         highlightSeasonRow(ss||null);
         highlightSeasonCards();
-        buildCal();updateSum();
+        buildCal();
+        updateSum();
       });
     }
+
     g.appendChild(e);
   }
 }
