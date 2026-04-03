@@ -235,6 +235,8 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
 .sc-price{font-size:1.4rem;font-weight:800;color:var(--text);line-height:1.1;margin-bottom:4px}
 .sc-price span{font-size:.78rem;font-weight:400;color:var(--text-muted);margin-left:2px}
 .sc-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 </style>
 </head>
 <body>
@@ -385,10 +387,13 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
           <button class="bc-cal-nav" id="bc-next">&#8594;</button>
         </div>
         <div class="cal-grid" id="bc-cal-grid"></div>
+        <div id="cal-loader" style="text-align:center;font-size:.75rem;color:var(--text-muted);padding:6px 0;display:none">
+          <span style="animation:pulse 1.5s infinite">⟳ Načítám obsazenost…</span>
+        </div>
 
         <div class="bc-gcal-note">
-          Obsazenost se načítá z Airbnb kalendáře.<br>
-          <a href="https://www.airbnb.cz/rooms/1561616555679812480" target="_blank">Zobrazit na Airbnb →</a>
+          Obsazenost se aktualizuje z Google Kalendáře.<br>
+          <a href="https://calendar.google.com/calendar/embed?src=casadelkraken%40gmail.com&ctz=Europe%2FMadrid" target="_blank">Zobrazit plný kalendář →</a>
         </div>
 
         <div class="bc-summary" id="bc-summary">
@@ -735,84 +740,58 @@ function highlightSeasonRow(date){
 }
 
 // ── GOOGLE CALENDAR INTEGRATION ──
-const ICAL_URL='https://www.airbnb.cz/calendar/ical/1561616555679812480.ics?t=389f6ee359b346ec9a9f30cc9ce9c328';
+const ICAL_URL='https://calendar.google.com/calendar/ical/casadelkraken%40gmail.com/public/basic.ics';
 const CORS_PROXY='https://corsproxy.io/?';
 let bookedRanges=[];
 let calLoaded=false;
 
 async function fetchICal(){
+  // Show calendar immediately with no booked days
+  calLoaded=true;
+  buildCal();
+
+  // Try to load from sessionStorage cache first (avoid repeat fetches)
+  const cacheKey='cdkIcal';
+  const cacheTime='cdkIcalTime';
+  const cached=sessionStorage.getItem(cacheKey);
+  const cachedAt=parseInt(sessionStorage.getItem(cacheTime)||'0');
+  const AGE=15*60*1000; // 15 min cache
+
+  if(cached && Date.now()-cachedAt < AGE){
+    bookedRanges=parseICal(cached);
+    buildCal();
+    return;
+  }
+
+  // Try proxies in parallel - use whichever responds first
   const proxies=[
     'https://api.allorigins.win/raw?url='+encodeURIComponent(ICAL_URL),
     'https://corsproxy.io/?'+encodeURIComponent(ICAL_URL),
+    'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(ICAL_URL),
   ];
-  for(const url of proxies){
-    try{
-      const resp=await fetch(url,{signal:AbortSignal.timeout(8000)});
-      if(!resp.ok) continue;
-      const text=await resp.text();
-      if(text.includes('BEGIN:VCALENDAR')){
-        bookedRanges=parseICal(text);
-        calLoaded=true;
-        buildCal();
-        return;
-      }
-    }catch(e){
-      console.warn('proxy failed:',url,e);
-    }
+
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),10000);
+
+  try{
+    const results=await Promise.any(
+      proxies.map(url=>
+        fetch(url,{signal:controller.signal})
+          .then(r=>{ if(!r.ok) throw new Error('bad status'); return r.text(); })
+          .then(text=>{ if(!text.includes('BEGIN:VCALENDAR')) throw new Error('not ical'); return text; })
+      )
+    );
+    clearTimeout(timeout);
+    sessionStorage.setItem(cacheKey, results);
+    sessionStorage.setItem(cacheTime, Date.now().toString());
+    bookedRanges=parseICal(results);
+    buildCal();
+    console.log('iCal loaded, '+bookedRanges.length+' booked ranges');
+  }catch(e){
+    clearTimeout(timeout);
+    console.warn('iCal load failed (all proxies):', e.message);
+    // Calendar still works, just without booked days highlighted
   }
-  console.warn('All iCal proxies failed, showing empty calendar');
-  calLoaded=true;
-  buildCal();
-}
-
-function parseICal(text){
-  const ranges=[];
-  // Unfold lines (iCal lines can be wrapped with CRLF + space/tab)
-  const unfolded=text.replace(/\r\n[ \t]/g,'').replace(/\r[ \t]/g,'').replace(/\n[ \t]/g,'');
-  const lines=unfolded.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-  let dtstart=null,dtend=null,dtstartRaw=null,dtendRaw=null,inEvent=false;
-  for(const line of lines){
-    if(line.startsWith('BEGIN:VEVENT')){inEvent=true;dtstart=null;dtend=null;dtstartRaw=null;dtendRaw=null;}
-    if(line.startsWith('END:VEVENT')){
-      if(dtstart&&dtend) ranges.push({s:dtstart,e:dtend});
-      inEvent=false;
-    }
-    if(inEvent){
-      // Match DTSTART or DTSTART;VALUE=DATE or DTSTART;TZID=...
-      const dsm=line.match(/^DTSTART[^:]*:(.+)/);
-      const dem=line.match(/^DTEND[^:]*:(.+)/);
-      if(dsm){dtstartRaw=dsm[1].trim();dtstart=parseICalDate(dtstartRaw);}
-      if(dem){dtendRaw=dem[1].trim();dtend=parseICalDate(dtendRaw);}
-    }
-  }
-  console.log('Parsed '+ranges.length+' booked ranges from iCal');
-  ranges.forEach(r=>console.log(' Booked:',r.s.toDateString(),'->',r.e.toDateString()));
-  return ranges;
-}
-
-function parseICalDate(s){
-  // Handle both DATE (20260911) and DATETIME (20260911T150000Z) formats
-  const clean=s.replace(/[TZ]/g,'').substr(0,8);
-  const y=parseInt(clean.substr(0,4));
-  const m=parseInt(clean.substr(4,2))-1;
-  const d=parseInt(clean.substr(6,2));
-  const dt=new Date(y,m,d);
-  dt.setHours(0,0,0,0);
-  return dt;
-}
-
-// For datetime events (with time), DTEND checkout time means that day is free
-// For all-day events, DTEND is exclusive (day after last night)
-// We store end as-is and check d < e so both work correctly
-function adjustEndDate(dtendStr, dtstartStr){
-  // If DTSTART has time component, it's a datetime event
-  // DTEND with time like T100000 means checkout at 10:00 - that day IS free
-  // So for datetime events, end date = the checkout day (exclusive, already correct)
-  return parseICalDate(dtendStr);
-}
-
-function isBooked(d){
-  return bookedRanges.some(r=>d>=r.s && d<r.e);
 }
 
 // ── MINI CALENDAR ──
@@ -843,6 +822,9 @@ function buildCal(){
   const g=document.getElementById('bc-cal-grid');
   document.getElementById('bc-cal-title').textContent=MCS[vm]+' '+vy;
   g.innerHTML='';
+  // Hide loading indicator once calendar renders
+  const loader=document.getElementById('cal-loader');
+  if(loader) loader.style.display='none';
   DCS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;g.appendChild(e);});
   let dow=(new Date(vy,vm,1).getDay()+6)%7;
   for(let i=0;i<dow;i++){const e=document.createElement('div');e.className='cal-day empty';g.appendChild(e);}
@@ -905,6 +887,8 @@ function updateSum(){
 document.getElementById('bc-prev').addEventListener('click',()=>{vm--;if(vm<0){vm=11;vy--;}buildCal();});
 document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){vm=0;vy++;}buildCal();});
 
+const loaderEl=document.getElementById('cal-loader');
+if(loaderEl) loaderEl.style.display='block';
 fetchICal();
 
 
