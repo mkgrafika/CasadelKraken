@@ -745,23 +745,37 @@ async function fetchICal(){
     'https://corsproxy.io/?'+encodeURIComponent(ICAL_URL),
     'https://api.allorigins.win/raw?url='+encodeURIComponent(ICAL_URL),
   ];
+
   for(const url of proxies){
     try{
-      const resp=await fetch(url,{signal:AbortSignal.timeout(8000)});
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+
+      const resp = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+
       if(!resp.ok) continue;
-      const text=await resp.text();
+
+      const text = await resp.text();
+
+      console.log('ICAL preview:', text.slice(0, 200));
+
       if(text.includes('BEGIN:VCALENDAR')){
-        bookedRanges=parseICal(text);
-        calLoaded=true;
+        bookedRanges = parseICal(text);
+        calLoaded = true;
+
         buildCal();
         return;
       }
+
     }catch(e){
-      console.warn('proxy failed:',url,e);
+      console.warn('proxy failed:', url, e);
     }
   }
+
   console.warn('All iCal proxies failed, showing empty calendar');
-  calLoaded=true;
+
+  calLoaded = true;
   buildCal();
 }
 
@@ -840,7 +854,7 @@ function getSeasonColor(d){
 }
 
 function buildCal(){
-  if (!calLoaded) return; // 👈 tohle je jediná změna nahoře
+  if (!calLoaded || !bookedRanges || bookedRanges.length === undefined) return;
 
   const g=document.getElementById('bc-cal-grid');
   document.getElementById('bc-cal-title').textContent=MCS[vm]+' '+vy;
@@ -936,8 +950,17 @@ function updateSum(){
   }
 }
 
-document.getElementById('bc-prev').addEventListener('click',()=>{vm--;if(vm<0){vm=11;vy--;}buildCal();});
-document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){vm=0;vy++;}buildCal();});
+document.getElementById('bc-prev').addEventListener('click',()=>{
+  vm--;
+  if(vm<0){vm=11;vy--;}
+  if(calLoaded) buildCal();
+});
+
+document.getElementById('bc-next').addEventListener('click',()=>{
+  vm++;
+  if(vm>11){vm=0;vy++;}
+  if(calLoaded) buildCal();
+});
 
 fetchICal();
 
