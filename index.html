@@ -363,7 +363,7 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
         <p>🏖️ Probuď se pouhých <strong>100 metrů od moře</strong> a užívej si dny na jedné z nejkrásnějších pláží na valencijském pobřeží. Po dni stráveném na pláži si odpočiň na prostorném balkóně u večerního drinku.</p>
         <p>🏠 Apartmán je <strong>plně vybavený</strong> pro pohodlný pobyt – pro rodinnou večeři v kuchyni nebo hraní v obývacím pokoji. Vše, co potřebuješ, je tady.</p>
         <p>🎉 Pláž je <strong>zdarma</strong> a během letní sezóny jsou k dispozici plavčíci. Město pořádá na pláži bezplatné aktivity – aerobik, paddleboarding, zumbu a mnoho dalšího.</p>
-        <p>🛏️ V apartmá jsou <strong>dvě ložnice</strong> a obývací pokoj. Obě ložnice mají stropní ventilátory pro pohodlný spánek, v obývacím pokoji je přenosný ventilátor – takže se nebudete potit ani v největším vedru.</p>
+        <p>🛏️ V <strong>apartmánu jsou dvě ložnice</strong> a obývací pokoj. Obě ložnice mají stropní ventilátory pro pohodlný spánek, v obývacím pokoji je přenosný ventilátor – takže se nebudete potit ani v největším vedru.</p>
         <p>🔑 <strong>Bezkontaktní příjezd</strong> – klíče budou čekat ve schránce v Gandii (cca 10 km). Příjezd od 15:00, odjezd do 11:00. V případě jakýchkoliv dotazů jsme ti kdykoliv k dispozici.</p>
         <p>🚬 Kouření povoleno pouze na balkóně.</p>
       </div>
@@ -387,8 +387,8 @@ body{font-family:'Nunito Sans','Helvetica Neue',Arial,sans-serif;color:var(--tex
         <div class="cal-grid" id="bc-cal-grid"></div>
 
         <div class="bc-gcal-note">
-          Obsazené dny načítáme z Google Kalendáře.<br>
-          <a href="https://calendar.google.com/calendar/embed?src=casadelkraken%40gmail.com&ctz=Europe%2FMadrid" target="_blank">Zobrazit plný kalendář →</a>
+          Obsazenost se načítá z Airbnb kalendáře.<br>
+          <a href="https://www.airbnb.cz/rooms/1561616555679812480" target="_blank">Zobrazit na Airbnb →</a>
         </div>
 
         <div class="bc-summary" id="bc-summary">
@@ -663,13 +663,13 @@ function icon(name){
 
 const CATS=[
   {title:'Koupelna',items:[{ic:'shower',l:'Sprchový gel'},{ic:'drop',l:'Šampon'},{ic:'drop',l:'Tělové mýdlo'},{ic:'drop',l:'Teplá voda'},{ic:'wind',l:'Fén'},{ic:'drop',l:'Bidet'}]},
-  {title:'Ložnice a prádlo',items:[{ic:'layers',l:'Ručníky a ložní prádlo'},{ic:'layers',l:'Povlečení'},{ic:'layers',l:'Polštáře a přikrývky navíc'},{ic:'refresh',l:'Pračka'},{ic:'layers',l:'Ramínka'},{ic:'layers',l:'Sušák na oblečení'},{ic:'eye',l:'Moskytiéra'},{ic:'inbox',l:'Úložný prostor: skříň, šatník, komoda'}]},
+  {title:'Ložnice a prádlo',items:[{ic:'layers',l:'Ručníky a ložní prádlo'},{ic:'layers',l:'Povlečení'},{ic:'layers',l:'Polštáře a přikrývky navíc'},{ic:'refresh',l:'Pračka'},{ic:'layers',l:'Sušák na oblečení'},{ic:'eye',l:'Moskytiéra'},{ic:'inbox',l:'Úložný prostor: skříň, šatník, komoda'}]},
   {title:'Topení a klimatizace',items:[{ic:'wind',l:'Stropní ventilátor'},{ic:'wind',l:'Přenosné ventilátory'},{ic:'thermometer',l:'Přenosné topení'}]},
-  {title:'Kuchyně a stolování',items:[{ic:'home',l:'Plně vybavená kuchyně'},{ic:'box',l:'Lednice a mrazák'},{ic:'zap',l:'Mikrovlnná trouba'},{ic:'zap',l:'Plynový sporák a trouba'},{ic:'coffee',l:'Kávovar'},{ic:'zap',l:'Rychlovarná konvice'},{ic:'box',l:'Základní suroviny'},{ic:'layers',l:'Nádobí a příbory'},{ic:'box',l:'Sklenice na víno'},{ic:'box',l:'Pečicí plech a mixér'},{ic:'home',l:'Jídelní stůl'}]},
+  {title:'Kuchyně a stolování',items:[{ic:'home',l:'Plně vybavená kuchyně'},{ic:'box',l:'Lednice a mrazák'},{ic:'zap',l:'Mikrovlnná trouba'},{ic:'zap',l:'Plynový sporák a trouba'},{ic:'coffee',l:'Kávovar'},{ic:'zap',l:'Rychlovarná konvice'},{ic:'box',l:'Základní suroviny'},{ic:'layers',l:'Nádobí a příbory'},{ic:'box',l:'Sklenice na víno'},{ic:'box',l:'Pečicí plech'},{ic:'home',l:'Jídelní stůl'}]},
   {title:'Internet a kancelář',items:[{ic:'wifi',l:'WiFi zdarma'},{ic:'monitor',l:'Vyhrazený pracovní prostor'}]},
   {title:'Venkovní',items:[{ic:'sun',l:'Soukromý balkón s posezením'},{ic:'sun',l:'Venkovní nábytek a jídelna'},{ic:'map-pin',l:'Parkování na ulici zdarma'},{ic:'map-pin',l:'Přímý přístup na pláž (100 m)'}]},
   {title:'Bezpečnost',items:[{ic:'shield',l:'Hasicí přístroj'},{ic:'heart',l:'Lékárnička'}]},
-  {title:'Rodina',items:[{ic:'users',l:'Dětská vanička (na požádání)'},{ic:'users',l:'Přebalovací stůl (na požádání)'},{ic:'box',l:'Stolní hry'},{ic:'sun',l:'Venkovní hřiště v okolí'}]},
+  {title:'Rodina',items:[{ic:'box',l:'Stolní hry'},{ic:'sun',l:'Venkovní hřiště v okolí'}]},
   {title:'Zábava',items:[{ic:'book-open',l:'Knihy a čtení'}]},
   {title:'Služby',items:[{ic:'key',l:'Samoobslužný check-in'},{ic:'key',l:'Bezkontaktní příjezd'}]},
 ];
@@ -735,47 +735,33 @@ function highlightSeasonRow(date){
 }
 
 // ── GOOGLE CALENDAR INTEGRATION ──
-const ICAL_URL='https://calendar.google.com/calendar/ical/casadelkraken%40gmail.com/public/basic.ics';
+const ICAL_URL='https://www.airbnb.cz/calendar/ical/1561616555679812480.ics?t=389f6ee359b346ec9a9f30cc9ce9c328';
 const CORS_PROXY='https://corsproxy.io/?';
 let bookedRanges=[];
 let calLoaded=false;
 
 async function fetchICal(){
   const proxies=[
-    'https://corsproxy.io/?'+encodeURIComponent(ICAL_URL),
     'https://api.allorigins.win/raw?url='+encodeURIComponent(ICAL_URL),
+    'https://corsproxy.io/?'+encodeURIComponent(ICAL_URL),
   ];
-
   for(const url of proxies){
     try{
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
-
-      const resp = await fetch(url, { signal: controller.signal });
-      clearTimeout(timeout);
-
+      const resp=await fetch(url,{signal:AbortSignal.timeout(8000)});
       if(!resp.ok) continue;
-
-      const text = await resp.text();
-
-      console.log('ICAL preview:', text.slice(0, 200));
-
+      const text=await resp.text();
       if(text.includes('BEGIN:VCALENDAR')){
-        bookedRanges = parseICal(text);
-        calLoaded = true;
-
+        bookedRanges=parseICal(text);
+        calLoaded=true;
         buildCal();
         return;
       }
-
     }catch(e){
-      console.warn('proxy failed:', url, e);
+      console.warn('proxy failed:',url,e);
     }
   }
-
   console.warn('All iCal proxies failed, showing empty calendar');
-
-  calLoaded = true;
+  calLoaded=true;
   buildCal();
 }
 
@@ -854,44 +840,22 @@ function getSeasonColor(d){
 }
 
 function buildCal(){
-  if (!calLoaded || !bookedRanges || bookedRanges.length === undefined) return;
-
   const g=document.getElementById('bc-cal-grid');
   document.getElementById('bc-cal-title').textContent=MCS[vm]+' '+vy;
   g.innerHTML='';
-
-  DCS.forEach(d=>{
-    const e=document.createElement('div');
-    e.className='cal-dow';
-    e.textContent=d;
-    g.appendChild(e);
-  });
-
+  DCS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;g.appendChild(e);});
   let dow=(new Date(vy,vm,1).getDay()+6)%7;
-  for(let i=0;i<dow;i++){
-    const e=document.createElement('div');
-    e.className='cal-day empty';
-    g.appendChild(e);
-  }
-
+  for(let i=0;i<dow;i++){const e=document.createElement('div');e.className='cal-day empty';g.appendChild(e);}
   const dim=new Date(vy,vm+1,0).getDate();
   const today=new Date();today.setHours(0,0,0,0);
-
   for(let d=1;d<=dim;d++){
     const date=new Date(vy,vm,d);date.setHours(0,0,0,0);
-
-    const e=document.createElement('div');
-    e.className='cal-day';
-    e.textContent=d;
-
+    const e=document.createElement('div');e.className='cal-day';e.textContent=d;
+    // Season dot
     const sc=getSeasonColor(date);
     if(sc&&date>=today){
-      const dot=document.createElement('span');
-      dot.className='s-dot';
-      dot.style.background=sc;
-      e.appendChild(dot);
+      const dot=document.createElement('span');dot.className='s-dot';dot.style.background=sc;e.appendChild(dot);
     }
-
     if(date<today){e.classList.add('past');}
     else if(isBooked(date)){e.classList.add('booked');}
     else{
@@ -900,35 +864,23 @@ function buildCal(){
         else if(sameDay(date,se))e.classList.add('sel-end');
         else if(date>ss&&date<se)e.classList.add('in-range');
       }else if(ss&&sameDay(date,ss))e.classList.add('sel-start','sel-end');
-
       e.addEventListener('click',()=>{
         if(!ss||(ss&&se)){ss=date;se=null;}
         else if(date<ss){ss=date;se=null;}
         else if(sameDay(date,ss)){ss=null;se=null;}
         else{
-          let cur=new Date(ss);
-          cur.setDate(cur.getDate()+1);
-          let hb=false;
-
-          while(cur<date){
-            if(isBooked(cur)){hb=true;break;}
-            cur.setDate(cur.getDate()+1);
-          }
-
+          let cur=new Date(ss);cur.setDate(cur.getDate()+1);let hb=false;
+          while(cur<date){if(isBooked(cur)){hb=true;break;}cur.setDate(cur.getDate()+1);}
           if(hb){ss=date;se=null;}else se=date;
         }
-
         MIN=ss?getMinNights(ss):5;
         const minLabel=document.getElementById('min-nights-label');
         if(minLabel) minLabel.textContent=MIN+' nocí';
-
         highlightSeasonRow(ss||null);
         highlightSeasonCards();
-        buildCal();
-        updateSum();
+        buildCal();updateSum();
       });
     }
-
     g.appendChild(e);
   }
 }
@@ -950,17 +902,8 @@ function updateSum(){
   }
 }
 
-document.getElementById('bc-prev').addEventListener('click',()=>{
-  vm--;
-  if(vm<0){vm=11;vy--;}
-  if(calLoaded) buildCal();
-});
-
-document.getElementById('bc-next').addEventListener('click',()=>{
-  vm++;
-  if(vm>11){vm=0;vy++;}
-  if(calLoaded) buildCal();
-});
+document.getElementById('bc-prev').addEventListener('click',()=>{vm--;if(vm<0){vm=11;vy--;}buildCal();});
+document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){vm=0;vy++;}buildCal();});
 
 fetchICal();
 
