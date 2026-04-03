@@ -741,66 +741,79 @@ function highlightSeasonRow(date){
 
 // ── GOOGLE CALENDAR INTEGRATION ──
 const ICAL_URL='https://calendar.google.com/calendar/ical/casadelkraken%40gmail.com/public/basic.ics';
-const CORS_PROXY='https://corsproxy.io/?';
 let bookedRanges=[];
 let calLoaded=false;
 
-async function tryProxy(url){
-  const resp=await fetch(url);
-  if(!resp.ok) throw new Error('HTTP '+resp.status);
-  const text=await resp.text();
-  if(!text.includes('BEGIN:VCALENDAR')) throw new Error('Not iCal');
-  return text;
-}
-
 async function fetchICal(){
-  // Check session cache (15 min)
-  calLoaded=true;
-  try{
-    const cached=sessionStorage.getItem('cdkIcal');
-    const cachedAt=parseInt(sessionStorage.getItem('cdkIcalT')||'0');
-    if(cached && (Date.now()-cachedAt)<900000){
-      bookedRanges=parseICal(cached);
-      buildCal();
-      console.log('iCal from cache, ranges:',bookedRanges.length);
-      return;
-    }
-  }catch(e){}
-
-  // Try proxies one by one
   const proxies=[
-    'https://api.allorigins.win/raw?url='+encodeURIComponent(ICAL_URL),
     'https://corsproxy.io/?'+encodeURIComponent(ICAL_URL),
+    'https://api.allorigins.win/raw?url='+encodeURIComponent(ICAL_URL),
     'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(ICAL_URL),
   ];
-
   for(const url of proxies){
     try{
-      const text=await Promise.race([
-        tryProxy(url),
-        new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),8000))
-      ]);
-      bookedRanges=parseICal(text);
-      buildCal();
-      try{
-        sessionStorage.setItem('cdkIcal',text);
-        sessionStorage.setItem('cdkIcalT',Date.now().toString());
-      }catch(e){}
-      console.log('iCal OK via '+url+', ranges:',bookedRanges.length);
-      return;
+      const resp=await fetch(url);
+      if(!resp.ok) continue;
+      const text=await resp.text();
+      if(text.includes('BEGIN:VCALENDAR')){
+        bookedRanges=parseICal(text);
+        calLoaded=true;
+        buildCal();
+        console.log('iCal OK, ranges:',bookedRanges.length);
+        return;
+      }
     }catch(e){
-      console.warn('Proxy failed:',url,e.message);
+      console.warn('proxy failed:',url,e.message);
     }
   }
-  console.warn('All proxies failed, calendar works without booked days');
+  console.warn('All proxies failed');
+  calLoaded=true;
+  buildCal();
 }
 
-// ── MINI CALENDAR ──
+function parseICal(text){
+  const ranges=[];
+  const unfolded=text.replace(/\r\n[ \t]/g,'').replace(/\r[ \t]/g,'').replace(/\n[ \t]/g,'');
+  const lines=unfolded.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
+  let dtstart=null,dtend=null,inEvent=false;
+  for(const line of lines){
+    if(line.startsWith('BEGIN:VEVENT')){inEvent=true;dtstart=null;dtend=null;}
+    if(line.startsWith('END:VEVENT')){
+      if(dtstart&&dtend) ranges.push({s:dtstart,e:dtend});
+      inEvent=false;
+    }
+    if(inEvent){
+      const dsm=line.match(/^DTSTART[^:]*:(.+)/);
+      const dem=line.match(/^DTEND[^:]*:(.+)/);
+      if(dsm) dtstart=parseICalDate(dsm[1].trim());
+      if(dem) dtend=parseICalDate(dem[1].trim());
+    }
+  }
+  console.log('Parsed '+ranges.length+' booked ranges');
+  return ranges;
+}
+
+function parseICalDate(s){
+  const clean=s.replace(/[TZ]/g,'').substr(0,8);
+  const y=parseInt(clean.substr(0,4));
+  const m=parseInt(clean.substr(4,2))-1;
+  const d=parseInt(clean.substr(6,2));
+  const dt=new Date(y,m,d);
+  dt.setHours(0,0,0,0);
+  return dt;
+}
+
+function isBooked(d){
+  return bookedRanges.some(r=>d>=r.s && d<r.e);
+}
+
+// ── CALENDAR ──
 const MCS=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
 const DCS=['Po','Út','St','Čt','Pá','So','Ne'];
 let vy=2026,vm=5,ss=null,se=null;
-const PEAK_START=new Date(2026,5,27); // Jun 27
-const PEAK_END=new Date(2026,7,31);   // Aug 31
+
+const PEAK_START=new Date(2026,5,27);
+const PEAK_END=new Date(2026,7,31);
 function getMinNights(date){
   if(!date) return 5;
   return (date>=PEAK_START && date<=PEAK_END) ? 5 : 4;
@@ -810,20 +823,21 @@ let MIN=5;
 function sameDay(a,b){return a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
 function fmtD(d){return d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();}
 function diff(a,b){return Math.round((b-a)/86400000);}
+function fmtCZK(n){return n.toLocaleString('cs-CZ')+' Kč';}
 
 function getSeasonColor(d){
   const p=getPriceForDate(d);
-  if(p>=4250) return '#b85c38';   // Jul-Aug: terracotta
-  if(p>=2875) return '#c8a96e';   // Sep + holidays: sand
-  if(p>=2300) return '#8aaa6a';   // default: light olive
+  if(p>=4250) return '#b85c38';
+  if(p>=2875) return '#c8a96e';
+  if(p>=2300) return '#8aaa6a';
   return null;
 }
 
 function buildCal(){
   const g=document.getElementById('bc-cal-grid');
+  if(!g) return;
   document.getElementById('bc-cal-title').textContent=MCS[vm]+' '+vy;
   g.innerHTML='';
-  // Hide loading indicator once calendar renders
   const loader=document.getElementById('cal-loader');
   if(loader) loader.style.display='none';
   DCS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;g.appendChild(e);});
@@ -834,7 +848,6 @@ function buildCal(){
   for(let d=1;d<=dim;d++){
     const date=new Date(vy,vm,d);date.setHours(0,0,0,0);
     const e=document.createElement('div');e.className='cal-day';e.textContent=d;
-    // Season dot
     const sc=getSeasonColor(date);
     if(sc&&date>=today){
       const dot=document.createElement('span');dot.className='s-dot';dot.style.background=sc;e.appendChild(dot);
@@ -859,9 +872,9 @@ function buildCal(){
         MIN=ss?getMinNights(ss):5;
         const minLabel=document.getElementById('min-nights-label');
         if(minLabel) minLabel.textContent=MIN+' nocí';
-        highlightSeasonRow(ss||null);
         highlightSeasonCards();
-        buildCal();updateSum();
+        buildCal();
+        updateSum();
       });
     }
     g.appendChild(e);
@@ -871,43 +884,31 @@ function buildCal(){
 function updateSum(){
   const ok=ss&&se&&diff(ss,se)>=MIN;
   const warn=ss&&se&&diff(ss,se)>0&&diff(ss,se)<MIN;
-  document.getElementById('bc-summary').style.display=ok?'block':'none';
-  document.getElementById('bc-summary').classList.toggle('vis',ok);
-  const warnEl=document.getElementById('bc-warn');if(warnEl){warnEl.textContent='Min. pobyt jsou '+MIN+' noci';warnEl.style.display=warn?'block':'none';}
+  const sumEl=document.getElementById('bc-summary');
+  const warnEl=document.getElementById('bc-warn');
+  if(sumEl) sumEl.style.display=ok?'block':'none';
+  if(sumEl) sumEl.classList.toggle('vis',ok);
+  if(warnEl){warnEl.textContent='Min. pobyt jsou '+MIN+' noci';warnEl.style.display=warn?'block':'none';}
   if(ok){
     const {total,nights,avg}=calcStayPrice(ss,se);
-    document.getElementById('bc-sum-dates').textContent=fmtD(ss)+' – '+fmtD(se);
-    document.getElementById('bc-sum-label').textContent=nights+' nocí × prům. '+fmtCZK(avg);
-    document.getElementById('bc-sum-sub').textContent=fmtCZK(total);
-    document.getElementById('bc-sum-total').textContent=fmtCZK(total);
-    // price display removed from card
-    document.getElementById('bc-book-btn').href=`mailto:casadelkraken@gmail.com?subject=Rezervace%20Casa%20del%20Kraken&body=Dobr%C3%BD%20den%2C%20r%C3%A1d%2Fa%20bych%20rezervoval%2Fa%20term%C3%ADn%20od%20${fmtD(ss)}%20do%20${fmtD(se)}.%20Celkem%3A%20${total.toLocaleString('cs-CZ')}%20K%C4%8D%20(${nights}%20noc%C3%AD).`;
+    const dEl=document.getElementById('bc-sum-dates');
+    const lEl=document.getElementById('bc-sum-label');
+    const sEl=document.getElementById('bc-sum-sub');
+    const tEl=document.getElementById('bc-sum-total');
+    const bEl=document.getElementById('bc-book-btn');
+    if(dEl) dEl.textContent=fmtD(ss)+' – '+fmtD(se);
+    if(lEl) lEl.textContent=nights+' nocí × prům. '+fmtCZK(avg);
+    if(sEl) sEl.textContent=fmtCZK(total);
+    if(tEl) tEl.textContent=fmtCZK(total);
+    if(bEl) bEl.href='mailto:casadelkraken@gmail.com?subject=Rezervace%20Casa%20del%20Kraken&body=Dobr%C3%BD%20den%2C%20r%C3%A1d%2Fa%20bych%20rezervoval%2Fa%20term%C3%ADn%20od%20'+fmtD(ss)+'%20do%20'+fmtD(se)+'.%20Celkem%3A%20'+total.toLocaleString('cs-CZ')+'%20K%C4%8D%20('+nights+'%20noc%C3%AD).';
   }
 }
 
 document.getElementById('bc-prev').addEventListener('click',()=>{vm--;if(vm<0){vm=11;vy--;}buildCal();});
 document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){vm=0;vy++;}buildCal();});
 
-document.addEventListener('DOMContentLoaded', function(){
-  try{
-    const loaderEl=document.getElementById('cal-loader');
-    if(loaderEl) loaderEl.style.display='block';
-  }catch(e){}
-  buildCal();
-  fetchICal().catch(e=>console.warn('fetchICal error:',e));
-});
-
-
-function highlightSeasonCards(){
-  document.querySelectorAll('.season-card').forEach(card=>{
-    card.classList.remove('active-season');
-    if(!ss) return;
-    const from=new Date(card.dataset.from);
-    const to=new Date(card.dataset.to);
-    // highlight if selected start falls in this range
-    if(ss>=from && ss<=to) card.classList.add('active-season');
-  });
-}
+buildCal();
+fetchICal();
 
 // Contact modal
 function openContactModal(){
