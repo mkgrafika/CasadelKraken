@@ -705,14 +705,20 @@ document.getElementById('amenities-modal').addEventListener('click',e=>{if(e.tar
 function getPriceForDate(d){
   const m=d.getMonth(); // 0=Jan
   const day=d.getDate();
-  // Christmas/NYE: Dec 20 - Jan 6
-  if(m===11 && day>=20) return 2875;
-  if(m===0 && day<=6) return 2875;
-  // Jul-Aug: 4250
-  if(m===6 || m===7) return 4250;
+  // Jul + Aug: 4250
+  if(m===6||m===7) return 4250;
   // Sep: 2875
   if(m===8) return 2875;
-  // Default (Oct-Jun): 2300
+  // Svátky: Vánoce (Dec 20 - Jan 6)
+  if(m===11&&day>=20) return 2875;
+  if(m===0&&day<=6) return 2875;
+  // Fallas: Mar 12-19
+  if(m===2&&day>=12&&day<=19) return 2875;
+  // Velikonoce: týden kolem Velikonoc (březen/duben) - fixní dny
+  // 2026: Apr 2-6, 2027: Mar 25-29
+  if(m===3&&day>=2&&day<=6) return 2875;   // 2026
+  if(m===2&&day>=25&&day<=29) return 2875; // 2027
+  // Ostatní: 2300
   return 2300;
 }
 
