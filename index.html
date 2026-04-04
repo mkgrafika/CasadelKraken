@@ -875,7 +875,7 @@ function buildCal(){
           while(cur<date){if(isBooked(cur)){hb=true;break;}cur.setDate(cur.getDate()+1);}
           if(hb){ss=date;se=null;}else se=date;
         }
-        MIN=ss?getMinNights(ss):5;
+        MIN=ss ? getMinNights(ss) : 5;
         const minLabel=document.getElementById('min-nights-label');
         if(minLabel) minLabel.textContent=MIN+' nocí';
         highlightSeasonCards();
@@ -915,6 +915,17 @@ document.getElementById('bc-next').addEventListener('click',()=>{vm++;if(vm>11){
 
 buildCal();
 fetchICal();
+
+function highlightSeasonCards(){
+  try{
+    document.querySelectorAll('.season-card').forEach(card=>{
+      card.classList.remove('active-season');
+      if(!ss) return;
+      const price=parseInt(card.dataset.price||'0');
+      if(price===getPriceForDate(ss)) card.classList.add('active-season');
+    });
+  }catch(e){}
+}
 
 // Contact modal
 function openContactModal(){
