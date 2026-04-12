@@ -943,7 +943,21 @@ var CAT_EN=["Bathroom","Bedroom & laundry","Heating & cooling","Kitchen & dining
 var CAT_ES=["Baño","Dormitorio y ropa de cama","Calefacción y climatización","Cocina y comedor","Internet y oficina","Exterior","Seguridad","Familia","Entretenimiento","Servicios"];
 
 var CLANG="cs";
-try{var _s=localStorage.getItem("cdkLang");if(_s&&LNG[_s])CLANG=_s;}catch(e){}
+try{
+  // 1. Hash #en nebo #es  → casadelkraken.cz/#en
+  var _hash=window.location.hash.replace("#","");
+  // 2. URL param ?lang=en → casadelkraken.cz/?lang=en
+  var _urlp=new URLSearchParams(window.location.search).get("lang");
+  var _detected=(_hash&&LNG[_hash])?_hash:(_urlp&&LNG[_urlp])?_urlp:null;
+  if(_detected){
+    CLANG=_detected;
+    localStorage.setItem("cdkLang",_detected);
+  } else {
+    // 3. localStorage (zapamatovaný jazyk)
+    var _s=localStorage.getItem("cdkLang");
+    if(_s&&LNG[_s])CLANG=_s;
+  }
+}catch(e){}
 window.CLANG=CLANG;
 
 function setLang(l){
