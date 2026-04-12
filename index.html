@@ -965,6 +965,11 @@ function setLang(l){
   CLANG=l;
   window.CLANG=l;
   try{localStorage.setItem("cdkLang",l);}catch(e){}
+  // Update URL hash so the link is shareable
+  try{
+    var newUrl=window.location.pathname+(l==="cs"?"":"#"+l);
+    history.replaceState(null,"",newUrl);
+  }catch(e){}
   applyLang();
 }
 
